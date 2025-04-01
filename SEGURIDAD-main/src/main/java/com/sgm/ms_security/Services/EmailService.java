@@ -25,9 +25,6 @@ public class EmailService {
     public void sendEmail(String to, String subject, String text) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        System.out.println("📨 Enviando correo a: " + to);
-        System.out.println("📬 Asunto: " + subject);
-        System.out.println("📄 Cuerpo: " + text);
 
         helper.setTo(to);
         helper.setSubject(subject);

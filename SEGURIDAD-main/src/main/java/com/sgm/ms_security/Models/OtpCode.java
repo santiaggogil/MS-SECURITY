@@ -18,7 +18,6 @@ public class OtpCode {
     private String code;
     private LocalDateTime expirationTime;
 
-    // 🔹 Métodos Getters y Setters manuales si es necesario
     public String getEmail() {
         return email;
     }

@@ -31,19 +31,19 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
 
-        // 🔹 Si viene desde el navegador (Google/Microsoft), autenticación directa SIN OTP
+        //Si viene desde el navegador (Google/Microsoft), autenticación directa SIN OTP
         if (!request.getHeader("User-Agent").contains("Postman")) {
             response.sendRedirect("/bienvenido");
             return;
         }
 
-        // 🔹 Si viene de Postman, genera y envía OTP
+        //Si viene de Postman, genera y envía OTP
         String otpCode = otpService.generateOtp(email);
         try {
             emailService.sendEmail(email, "Tu código OTP", "Tu código de verificación es: " + otpCode);
-            System.out.println("✅ OTP enviado a: " + email);
+            System.out.println("OTP enviado a: " + email);
         } catch (MessagingException e) {
-            throw new RuntimeException("❌ Error enviando el correo: " + e.getMessage());
+            throw new RuntimeException("Error enviando el correo: " + e.getMessage());
         }
 
         response.sendRedirect("/otp/pending?email=" + email);

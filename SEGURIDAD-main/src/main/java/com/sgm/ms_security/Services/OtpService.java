@@ -21,12 +21,12 @@ public class OtpService {
     public String generateOtp(String email) {
         Optional<OtpCode> existingOtp = otpCodeRepository.findTopByEmailOrderByExpirationTimeDesc(email);
 
-        // ⚠️ Evitar regeneración innecesaria
+        //Evitar regeneración innecesaria
         if (existingOtp.isPresent() && existingOtp.get().getExpirationTime().isAfter(LocalDateTime.now())) {
-            return existingOtp.get().getCode(); // ✅ Usar el código existente si no ha expirado
+            return existingOtp.get().getCode(); // Usar el código existente si no ha expirado
         }
 
-        // Generar nuevo OTP
+        //Generar nuevo OTP
         String code = String.format("%06d", new Random().nextInt(999999));
 
         OtpCode otp = new OtpCode();
@@ -46,9 +46,9 @@ public class OtpService {
         if (otpOptional.isPresent()) {
             OtpCode otp = otpOptional.get();
 
-            // ⚠️ Evitar problemas de expiración
+            //Evitar problemas de expiración
             if (otp.getExpirationTime().isAfter(LocalDateTime.now())) {
-                otpCodeRepository.delete(otp); // ✅ Eliminar OTP después de usarlo
+                otpCodeRepository.delete(otp); //Eliminar OTP después de usarlo
                 return true;
             }
         }
@@ -59,7 +59,7 @@ public class OtpService {
         try {
             emailService.sendOtpEmail(destinatario, codigoOtp);
         } catch (MessagingException e) {
-            System.out.println("❌ Error al enviar el correo: " + e.getMessage());
+            System.out.println("Error al enviar el correo: " + e.getMessage());
         }
     }
 }

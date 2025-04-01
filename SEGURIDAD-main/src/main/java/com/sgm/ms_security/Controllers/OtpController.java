@@ -58,14 +58,14 @@ public class OtpController {
         String email = request.get("email");
         String code = request.get("code");
 
-        System.out.println("🔹 Verificando OTP para: " + email + " con código: " + code);
+        System.out.println("Verificando OTP para: " + email + " con código: " + code);
 
         boolean isValid = otpService.validateOtp(email, code);
         if (isValid) {
-            System.out.println("✅ OTP Válido. Autenticación exitosa.");
+            System.out.println("OTP Válido. Autenticación exitosa.");
             return ResponseEntity.ok("Autenticación exitosa");
         } else {
-            System.out.println("❌ OTP Inválido o expirado.");
+            System.out.println("OTP Inválido o expirado.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código OTP incorrecto o expirado");
         }
     }

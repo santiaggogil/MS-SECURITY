@@ -29,12 +29,12 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/otp/**", "/login/**", "/oauth2/**").permitAll()  // 🔥 Permitir acceso libre a /login
+                        .requestMatchers("/otp/**", "/login/**", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .successHandler(oAuth2LoginSuccessHandler) // ✅ Aquí aseguramos la correcta ejecución
+                        .successHandler(oAuth2LoginSuccessHandler)
                 )
                 .build();
     }

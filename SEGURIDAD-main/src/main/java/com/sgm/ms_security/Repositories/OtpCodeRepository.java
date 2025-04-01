@@ -6,5 +6,5 @@ import java.util.Optional;
 
 public interface OtpCodeRepository extends MongoRepository<OtpCode, String> {
     Optional<OtpCode> findTopByEmailOrderByExpirationTimeDesc(String email);
-    void deleteByEmail(String email); //método para eliminar OTP previos
+    void deleteByEmail(String email);
 }
