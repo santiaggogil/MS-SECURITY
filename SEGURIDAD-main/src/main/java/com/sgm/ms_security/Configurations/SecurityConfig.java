@@ -27,15 +27,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf(csrf -> csrf.disable())  // 🔥 Desactivar CSRF temporalmente
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/otp/**").permitAll()  // 🔥 Permitir cualquier request a OTP
-                        .anyRequest().authenticated()  // 🔒 Todo lo demás requiere autenticación
+                        .requestMatchers("/otp/**", "/login/**", "/oauth2/**").permitAll()  // 🔥 Permitir acceso libre a /login
+                        .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.disable())  // ❌ Desactivar el login por defecto
-                .oauth2Login(oauth2 -> oauth2.disable()) // ❌ Desactivar OAuth2 temporalmente
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .successHandler(oAuth2LoginSuccessHandler) // ✅ Aquí aseguramos la correcta ejecución
+                )
                 .build();
     }
-
 }
