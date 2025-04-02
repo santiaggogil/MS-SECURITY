@@ -72,6 +72,7 @@ public class OAuthController {
         } catch (MessagingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al enviar correo.");
         }
+
         return attributes;
     }
 

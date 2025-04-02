@@ -34,10 +34,12 @@ public class ValidatorsService {
                                             String method){
         boolean success=false;
         User theUser=this.getUser(request);
+        System.out.println("Antes URL "+url+" metodo "+method);
+        System.out.println("usuario"+theUser);
         if(theUser!=null){
-            System.out.println("Antes URL "+url+" metodo "+method);
+
             url = url.replaceAll("[0-9a-fA-F]{24}|\\d+", "?");
-            System.out.println("URL "+url+" metodo "+method);
+
             Permission thePermission=this.thePermissionRepository.getPermission(url,method);
 
             List<UserRole> roles=this.theUserRoleRepository.getRolesByUser(theUser.get_id());
