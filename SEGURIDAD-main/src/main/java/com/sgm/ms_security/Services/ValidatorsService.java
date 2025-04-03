@@ -24,7 +24,6 @@ public class ValidatorsService {
     private UserRepository theUserRepository;
     @Autowired
     private RolePermissionRepository theRolePermissionRepository;
-
     @Autowired
     private UserRoleRepository theUserRoleRepository;
 
@@ -32,29 +31,24 @@ public class ValidatorsService {
     public boolean validationRolePermission(HttpServletRequest request,
                                             String url,
                                             String method){
-        boolean success=false;
-        User theUser=this.getUser(request);
-        System.out.println("Antes URL "+url+" metodo "+method);
-        System.out.println("usuario"+theUser);
-        if(theUser!=null){
+        boolean success = false;
 
-            url = url.replaceAll("[0-9a-fA-F]{24}|\\d+", "?");
+        User theUser = this.getUser(request);
 
-            Permission thePermission=this.thePermissionRepository.getPermission(url,method);
+        if(theUser != null){
+            url = url.replaceAll("[0-9a-fA-F]{24}|\\d+", "?"); // Reemplaza el Mongo id o los números en la URL por "?"
+            Permission thePermission = this.thePermissionRepository.getPermission(url, method); // Obtiene el permiso de la URL y el método
+            List<UserRole> userRoles = this.theUserRoleRepository.getRolesByUserId(theUser.get_id());
+            int i = 0;
+            while(i < userRoles.size() && !success){
+                UserRole actual = userRoles.get(i);
+                Role theRole = actual.getRole();
 
-            List<UserRole> roles=this.theUserRoleRepository.getRolesByUser(theUser.get_id());
-            int i=0;
-            while(i<roles.size() && success==false){
-                UserRole actual=roles.get(i);
-                Role theRole=actual.getRole();
                 if(theRole!=null && thePermission!=null){
-                    System.out.println("Rol "+theRole.get_id()+ " Permission "+thePermission.get_id());
-                    RolePermission theRolePermission=this.theRolePermissionRepository.getRolePermission(theRole.get_id(),thePermission.get_id());
+                    RolePermission theRolePermission = this.theRolePermissionRepository.getRolePermission(theRole.get_id(),thePermission.get_id());
                     if (theRolePermission!=null){
                         success=true;
                     }
-                }else{
-                    success=false;
                 }
                 i+=1;
             }
@@ -63,17 +57,16 @@ public class ValidatorsService {
         return success;
     }
     public User getUser(final HttpServletRequest request) {
-        User theUser=null;
-        String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("Header "+authorizationHeader);
-        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
-            String token = authorizationHeader.substring(BEARER_PREFIX.length());
-            System.out.println("Bearer Token: " + token);
-            User theUserFromToken=jwtService.getUserFromToken(token);
-            if(theUserFromToken!=null) {
-                theUser= this.theUserRepository.findById(theUserFromToken.get_id())
-                        .orElse(null);
+        User theUser = null;
 
+        String authorizationHeader = request.getHeader("Authorization"); // Obtiene el encabezado de autorización de la solicitud
+
+        if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
+            String token = authorizationHeader.substring(BEARER_PREFIX.length()); // Extrae el token de autorización de la solicitud
+            User theUserFromToken = jwtService.getUserFromToken(token);// Obtiene el usuario del token
+
+            if(theUserFromToken != null) {
+                theUser = this.theUserRepository.findById(theUserFromToken.get_id()).orElse(null); // Obtiene el usuario de la base de datos
             }
         }
         return theUser;

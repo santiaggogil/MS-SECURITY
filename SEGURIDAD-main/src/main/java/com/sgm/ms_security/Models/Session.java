@@ -1,33 +1,38 @@
 package com.sgm.ms_security.Models;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
+@Setter
+@Getter
 @Data
 @Document
-
 public class Session {
 
     @Id
-    String _id;
-
-    String token;
-
-    Date expiration;
-
-    String code2FA;
-
+    private String _id;
+    private String token;
+    private Date expirationDate;
+    private String validationCode;
+    private int timesErrorValidationCode;
     @DBRef
-    private User user;
+    private User user; // This is the user that is logged in
 
-    public Session(String token, Date expiration, String code2FA) {
-        this.token = token;
-        this.expiration = expiration;
-        this.code2FA = code2FA;
+    public Session() {
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getToken() {
@@ -38,20 +43,28 @@ public class Session {
         this.token = token;
     }
 
-    public Date getExpiration() {
-        return expiration;
+    public Date getExpirationDate() {
+        return expirationDate;
     }
 
-    public void setExpiration(Date expiration) {
-        this.expiration = expiration;
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
-    public String getCode2FA() {
-        return code2FA;
+    public String getValidationCode() {
+        return validationCode;
     }
 
-    public void setCode2FA(String code2FA) {
-        this.code2FA = code2FA;
+    public void setValidationCode(String validationCode) {
+        this.validationCode = validationCode;
+    }
+
+    public int getTimesErrorValidationCode() {
+        return timesErrorValidationCode;
+    }
+
+    public void setTimesErrorValidationCode(int timesErrorValidationCode) {
+        this.timesErrorValidationCode = timesErrorValidationCode;
     }
 
     public User getUser() {

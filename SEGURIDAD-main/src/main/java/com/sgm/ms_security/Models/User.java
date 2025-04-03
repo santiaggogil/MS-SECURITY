@@ -1,31 +1,39 @@
 package com.sgm.ms_security.Models;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
-@Document
+import java.util.List;
 
+@Setter
+@Getter
+@Data //para que guarde esa clase en persistencia, se almacena en una base de datos
+@Document //de mongo, como quiere lo que se llame la tabla en la base de datos, toma el nombre por defecto del usuario
 public class User {
-    @Id
-    String _id;
-    String name;
-    String email;
-    String password;
+    @Id //a mongo, para decirle que el atributo Id se cree automaticamente
+    private String _id;
+    private String name;
+    private String email;
+    private String password;
 
-    public User (String name, String email, Object o, Object o1){
-
-    }
-
-    public User(){
-
+    public User() {
     }
 
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getName() {
@@ -50,13 +58,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
     }
 }

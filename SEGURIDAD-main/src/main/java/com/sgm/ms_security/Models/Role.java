@@ -17,6 +17,8 @@ public class Role {
         this.description = description;
     }
 
+    public Role() {}
+
     public String get_id() {
         return _id;
     }

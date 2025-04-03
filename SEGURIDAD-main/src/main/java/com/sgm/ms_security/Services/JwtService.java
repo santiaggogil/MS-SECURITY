@@ -17,70 +17,77 @@ import java.util.HashMap;
 import java.util.Map;
 @Service
 public class JwtService {
-
-    @Autowired
-    private SessionRepository theSessionRepository;
     @Value("${jwt.secret}")
-    private String secret; //clave secreta que se utiliza para firmar el token. Debe mantenerse segura.
+    private String secret; // Esta es la clave secreta que se utiliza para firmar el token. Debe mantenerse segura.
 
     @Value("${jwt.expiration}")
-    private Long expiration; //milisegundos de expiracion
-    private Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    private Long expiration; // Tiempo de expiración del token en milisegundos.
 
-    public String generateToken(User theUser) {
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+    public HashMap<String, Object> generateToken(User theUser) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
         Map<String, Object> claims = new HashMap<>();
         claims.put("_id", theUser.get_id());
         claims.put("name", theUser.getName());
         claims.put("email", theUser.getEmail());
-        claims.put("password", theUser.getPassword());
 
-        return Jwts.builder()
+        HashMap<String, Object> theResponse = new HashMap<>();
+
+        String token = Jwts.builder()
                 .setClaims(claims)
-                .setSubject(theUser.getName())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(secretKey)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
-    }
 
+        theResponse.put("token", token);
+        theResponse.put("expiration", expiryDate);
+
+        return theResponse;
+    }
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token);
 
             // Verifica la expiración del token
             Date now = new Date();
-            if (claimsJws.getBody().getExpiration().before(now)) {
-                return false;
-            }
-
-            return true;
+            return !claimsJws.getBody().getExpiration().before(now);
         } catch (SignatureException ex) {
+            // La firma del token es inválida
             return false;
         } catch (Exception e) {
+            // Otra excepción
             return false;
         }
     }
 
-    public User getUserFromToken(String token) { //recive string devuelve un usuario
+    public User getUserFromToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)//cifra con la firma del token
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token);
 
             Claims claims = claimsJws.getBody();
 
+            System.out.println("Claims: " + claims);
+
             User user = new User();
             user.set_id((String) claims.get("_id"));
             user.setName((String) claims.get("name"));
             user.setEmail((String) claims.get("email"));
+
             return user;
         } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            System.out.println("SecretKey: " + getSigningKey());
             return null;
         }
     }

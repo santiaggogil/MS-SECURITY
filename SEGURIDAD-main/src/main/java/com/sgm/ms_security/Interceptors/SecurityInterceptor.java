@@ -16,9 +16,25 @@ public class SecurityInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler)
-            throws Exception {
-        boolean success=this.validatorService.validationRolePermission(request,request.getRequestURI(),request.getMethod());
-        return success;
+                            throws Exception {
+
+        // Capturar el token del header Authorization
+        String authHeader = request.getHeader("Authorization");
+
+        // Verificar si el token es nulo o no tiene el formato correcto
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token requerido o formato inválido");
+            return false;
+        }
+
+        boolean succes = this.validatorService.validationRolePermission(request, request.getRequestURI(), request.getMethod());
+
+        System.out.println("Interceptor: " + request.getHeader("Authorization"));
+        System.out.println("Interceptor: " + request.getRequestURI());
+        System.out.println("Interceptor: " + request.getMethod());
+        System.out.println("Interceptor: " + succes); // Imprime en consola el resultado de la validación
+
+        return succes; // Lógica a ejecutar antes de que se maneje la solicitud por el controlador
     }
 
     @Override

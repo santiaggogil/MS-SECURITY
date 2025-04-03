@@ -1,20 +1,26 @@
 package com.sgm.ms_security.Models;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Setter
+@Getter
 @Data
 @Document
 public class UserRole {
     @Id
     private String _id;
-    @DBRef
-    private User user;
+
     @DBRef
     private Role role;
-    public UserRole(){
+    @DBRef
+    private User user;
+
+    public UserRole() {
 
     }
 
@@ -26,19 +32,19 @@ public class UserRole {
         this._id = _id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -3,7 +3,10 @@ package com.sgm.ms_security.Controllers;
 import com.sgm.ms_security.Models.User;
 import com.sgm.ms_security.Repositories.UserRepository;
 import com.sgm.ms_security.Services.EncryptionService;
+import com.sgm.ms_security.Services.RequestURL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,10 +21,14 @@ public class UsersController {
     @Autowired
     private EncryptionService theEncryptionService;
 
+    @Autowired
+    private RequestURL requestURL;
+
     @GetMapping("")
     public List<User> find(){
         return this.theUserRepository.findAll();
     }
+
     @GetMapping("{id}")
     public User findById(@PathVariable String id){
         User theUser=this.theUserRepository.findById(id).orElse(null);

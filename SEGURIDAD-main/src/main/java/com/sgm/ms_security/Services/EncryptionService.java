@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 
 @Service
 public class EncryptionService {
+
     public String convertSHA256(String password) {
         MessageDigest md = null;
         try {
@@ -22,5 +23,10 @@ public class EncryptionService {
             sb.append(String.format("%02x", b));
         }
         return sb.toString();
+    }
+
+    public String generateValidationCode() {
+        // Create a 6 digit validation code
+        return String.valueOf((int)(Math.random() * 900000) + 100000);
     }
 }
