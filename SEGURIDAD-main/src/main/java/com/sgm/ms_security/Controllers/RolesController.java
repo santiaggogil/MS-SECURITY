@@ -3,9 +3,12 @@ package com.sgm.ms_security.Controllers;
 import com.sgm.ms_security.Models.Role;
 import com.sgm.ms_security.Repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -18,6 +21,17 @@ public class RolesController {
     @GetMapping("")
     public List<Role> findAll() {
         return this.theRoleRepository.findAll();
+    }
+
+
+    @GetMapping("/mas-veces/{roleId}")
+    public ResponseEntity<String> getMostUsedMethod(@PathVariable String roleId) {
+        Optional<Role> roleOpt = theRoleRepository.findById(roleId);
+        if (roleOpt.isPresent()) {
+            String mostUsedMethod = roleOpt.get().getMostUsedMethod();
+            return ResponseEntity.ok(mostUsedMethod);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Role not found");
     }
 
     @GetMapping("{id}")

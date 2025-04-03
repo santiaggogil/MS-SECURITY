@@ -4,6 +4,9 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Data
 @Document
 public class Role {
@@ -12,12 +15,28 @@ public class Role {
     private String name;
     private String description;
 
+    // Contador de métodos usados
+    private Map<String, Integer> methodUsage = new HashMap<>();
+
+
     public Role(String name, String description) {
         this.name = name;
         this.description = description;
+        this.methodUsage = new HashMap<>();
     }
 
     public Role() {}
+
+    public void incrementMethodCount(String method) {
+        methodUsage.put(method, methodUsage.getOrDefault(method, 0) + 1);
+    }
+
+    public String getMostUsedMethod() {
+        return methodUsage.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("No data");
+    }
 
     public String get_id() {
         return _id;

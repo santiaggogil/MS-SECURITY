@@ -5,6 +5,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Data
 @Document
 
@@ -22,6 +25,7 @@ public class RolePermission {
     public RolePermission() {
 
     }
+
 
     public String get_id() {
         return _id;
