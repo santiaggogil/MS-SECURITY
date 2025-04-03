@@ -19,13 +19,17 @@ public class SecurityInterceptor implements HandlerInterceptor {
                             throws Exception {
 
         // Capturar el token del header Authorization
+        System.out.println("INGRESA");
         String authHeader = request.getHeader("Authorization");
 
         // Verificar si el token es nulo o no tiene el formato correcto
+        /*
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token requerido o formato inválido");
             return false;
         }
+        */
+
 
         boolean succes = this.validatorService.validationRolePermission(request, request.getRequestURI(), request.getMethod());
 
